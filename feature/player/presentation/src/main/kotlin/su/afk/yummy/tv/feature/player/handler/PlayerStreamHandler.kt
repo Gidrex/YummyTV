@@ -96,6 +96,13 @@ internal class PlayerStreamHandler @Inject constructor(
 
         when (val result = resolvePlayerStream(request)) {
             is PlayerStreamResolveResult.Stream -> {
+                // TEMP(dlna phase 1): dump resolved stream for format survey; remove before phase 2.
+                android.util.Log.i(
+                    "DlnaProbe",
+                    "src=${request.iframeUrl}\nurl=${result.url}\nheaders=${result.headers}\n" +
+                        "qualities=${result.qualities}\nqualityHeaders=${result.qualityHeaders}\n" +
+                        "audio=${result.allohaAudioTracks}\nsubs=${result.allohaSubtitles}",
+                )
                 val selectedQuality = selectedQualityOverride
                     ?.takeIf { quality -> result.qualities?.containsKey(quality) == true }
                     ?: selectedQuality(result.qualities, preferredHeightAsync.await())
